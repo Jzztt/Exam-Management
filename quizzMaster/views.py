@@ -28,19 +28,19 @@ class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsQuestionManager | IsAdmin]
 
 class ExamViewSet(viewsets.ModelViewSet):
     queryset = Exam.objects.all()
     serializer_class = ExamSerializer
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdmin | IsExamAdministrator]
 
 class ExamQuestionViewSet(viewsets.ModelViewSet):
     queryset = ExamQuestion.objects.all()
     serializer_class = ExamQuestionSerializer
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdmin | IsExamAdministrator | IsQuestionManager]
 
 class SubjectViewSet(viewsets.ModelViewSet):
     queryset = Subject.objects.all()
@@ -52,7 +52,7 @@ class ExamScheduleViewSet(viewsets.ModelViewSet):
     queryset = ExamSchedule.objects.all()
     serializer_class = ExamScheduleSerializer
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated, IsAdmin, IsExamAdministrator]
+    permission_classes = [IsAuthenticated, IsAdmin | IsExamAdministrator]
 
 class SubmissionViewSet(viewsets.ModelViewSet):
     queryset = Submission.objects.all()
@@ -152,7 +152,6 @@ class ImportDocxView(APIView):
 
 
 class AuthViewSet(viewsets.ModelViewSet):
-    authentication_classes = [JWTAuthentication]
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
