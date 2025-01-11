@@ -1,0 +1,27 @@
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+env/
+venv/
+
+*.log
+*.pot
+*.pyc
+
+*.env
+
+staticfiles/
+media/
+
+.DS_Store
+Thumbs.db
+
+.vscode/
+.idea/
+
+*.migrations/ (nếu bạn không muốn lưu lịch sử migrations)
+
+*.sql
+*.sql.gz
