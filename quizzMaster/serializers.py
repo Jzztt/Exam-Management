@@ -14,16 +14,12 @@ class QuestionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ExamSerializer(serializers.ModelSerializer):
-    questions = serializers.SerializerMethodField()
+    subject = serializers.PrimaryKeyRelatedField(queryset=Subject.objects.all())
+
 
     class Meta:
         model = Exam
-        fields = ['id', 'exam_code', 'duration', 'num_questions', 'subject', 'created_at', 'updated_at', 'questions']
-
-    def get_questions(self, obj):
-        # Lấy tất cả câu hỏi liên kết với kỳ thi
-        exam_questions = ExamQuestion.objects.filter(exam=obj).select_related('question')
-        return QuestionSerializer([eq.question for eq in exam_questions], many=True).data
+        fields = '__all__'
 
 class ExamQuestionSerializer(serializers.ModelSerializer):
     exam = ExamSerializer()
