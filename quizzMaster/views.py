@@ -46,7 +46,7 @@ class SubjectViewSet(viewsets.ModelViewSet):
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated, IsAdmin, IsQuestionManager]
+    permission_classes = [IsAuthenticated | IsAdmin | IsQuestionManager]
 
 class ExamScheduleViewSet(viewsets.ModelViewSet):
     queryset = ExamSchedule.objects.all()
