@@ -14,12 +14,11 @@ class QuestionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ExamSerializer(serializers.ModelSerializer):
-    subject = serializers.PrimaryKeyRelatedField(queryset=Subject.objects.all())
-
+    subject_name = serializers.CharField(source='subject.name', read_only=True)
 
     class Meta:
         model = Exam
-        fields = '__all__'
+        fields = ['id', 'exam_code', 'duration', 'num_questions', 'subject', 'subject_name']
 
 class ExamQuestionSerializer(serializers.ModelSerializer):
     exam = ExamSerializer()
@@ -35,7 +34,7 @@ class SubjectSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ExamScheduleSerializer(serializers.ModelSerializer):
-    exam = ExamSerializer()
+    exam = serializers.PrimaryKeyRelatedField(queryset=Exam.objects.all())
 
     class Meta:
         model = ExamSchedule

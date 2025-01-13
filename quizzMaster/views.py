@@ -33,6 +33,14 @@ class QuestionViewSet(viewsets.ModelViewSet):
 class ExamViewSet(viewsets.ModelViewSet):
     queryset = Exam.objects.all()
     serializer_class = ExamSerializer
+    # queryset = Exam.objects.select_related('subject').all()
+    # serializer_class = ExamSerializer
+
+    # def get_queryset(self):
+    #     subject_id = self.request.query_params.get('subject_id')
+    #     if subject_id:
+    #         return self.queryset.filter(subject_id=subject_id)
+    #     return self.queryset
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated, IsAdmin | IsExamAdministrator]
 
@@ -165,16 +173,16 @@ class AuthViewSet(viewsets.ModelViewSet):
         role = Role.objects.get(name='Candidate')
        except Role.DoesNotExist:
         #    logger.error('Role does not exist')
-           return Response({'error': 'Lỗi hệ thống, vui lòng thử lại sau'}, status=status.HTTP_400_BAD_REQUEST)
+           return Response({'error': 'Something went wrong'}, status=status.HTTP_400_BAD_REQUEST)
 
        if User.objects.filter(username=username).exists():
-            return Response({'error': 'Username đã tồn tại'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'username already exists'}, status=status.HTTP_400_BAD_REQUEST)
        if User.objects.filter(email=email).exists():
-            return Response({'error': 'Email đã tồn tại'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Email already exists'}, status=status.HTTP_400_BAD_REQUEST)
 
        user = User.objects.create(username=username, email=email, password=make_password(password), role=role)
        user.save()
-       return Response({'message': 'Đăng ký thành công'}, status=status.HTTP_201_CREATED)
+       return Response({'message': 'User registered successfully'}, status=status.HTTP_201_CREATED)
 
     @action(detail=False, methods=['post'], permission_classes=[AllowAny])
     def login(self, request):
@@ -194,7 +202,7 @@ class AuthViewSet(viewsets.ModelViewSet):
                     }
                 }, status=status.HTTP_200_OK)
             else:
-                return Response({'error': 'Mật khẩu không đúng'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
         except User.DoesNotExist:
             return Response({'error': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
