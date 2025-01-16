@@ -20,6 +20,7 @@ router.register(r'auth', views.AuthViewSet, basename='auth')
 urlpatterns = [
     path('', include(router.urls)),
     path('import-docx/', views.ImportDocxView.as_view(), name='import-docx'),
+    path('exam-import-docx/', views.ImportExamView.as_view(), name='exam-import-docx'),
     # path('exams/<int:exam_id>/questions/', views.ExamQuestionsView.as_view(), name='exam-questions'),
 
 ]
