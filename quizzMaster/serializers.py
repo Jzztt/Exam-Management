@@ -51,16 +51,16 @@ class ExamScheduleSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate(self, attrs):
-        start_at = attrs.get('start_at')
-        end_at = attrs.get('end_at')
+        start_time = attrs.get('start_time')
+        end_time = attrs.get('end_time')
         exam = attrs.get('exam')
 
-        if start_at > end_at:
+        if start_time > end_time:
             raise serializers.ValidationError({
-                "end_at": "End time must be after start time."
+                "end_time": "End time must be after start time."
             })
 
-        if ExamSchedule.objects.filter( exam=exam, start_at=start_at, end_at=end_at).exists():
+        if ExamSchedule.objects.filter( exam=exam, start_time=start_time, end_time=end_time).exists():
             raise serializers.ValidationError("The exam schedule conflicts with another schedule.")
 
         return attrs
