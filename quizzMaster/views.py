@@ -305,7 +305,6 @@ class ImportExamView(APIView):
             return Response({"message": "Invalid file format", "status": "error"}, status=400)
         try:
             document = Document(docx_file)
-            exam_code = request.data.get('exam_code')
 
             subject_name, num_questions, lecturer = self.extract_metadata(document)
 
@@ -314,14 +313,21 @@ class ImportExamView(APIView):
 
             subject = self.create_or_update_subject(subject_name, lecturer)
 
-            exam_code = request.data.get('exam_code')
-            if not exam_code:
+            exam_id  = request.data.get('exam_id')
+            if exam_id:
+                try:
+                    exam = Exam.objects.get(id=exam_id)
+                    exam_code = exam.exam_code
+                except Exam.DoesNotExist:
+                    return Response({"message": "Exam not found", "status": "error"}, status=404)
+            else:
                 exam_code = f"EXAM_{subject_name}_{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}"
             exam = self.save_exam(subject, num_questions, exam_code)
+            print(exam_code)
 
             table = document.tables[0]
             questions = self.process_questions_table(table,document)
-            print(questions,subject)
+            print(questions)
 
             self.save_questions_and_choices_and_answers(questions, exam, subject)
 
