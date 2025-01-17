@@ -275,9 +275,19 @@ class ImportExamView(APIView):
                     current_question["mix_choices"] = mix_choices
         return questions
 
-    def save_exam(self,subject, num_questions, exam_code):
-        exam = Exam.objects.create(subject=subject, num_questions=num_questions, exam_code=exam_code)
-        return exam
+    def save_exam(self,subject, num_questions, exam_code, exam_id = None):
+        if exam_id:
+            print("exam_id",exam_id)
+            exam = Exam.objects.get(id=exam_id)
+            print("exam",exam)
+            exam.subject = subject
+            exam.num_questions = num_questions
+            exam.exam_code = exam_code
+            exam.save()
+            return exam
+        else:
+            exam = Exam.objects.create(subject=subject, num_questions=num_questions, exam_code=exam_code)
+            return exam
 
     def save_questions_and_choices_and_answers(self, questions, exam, subject):
         for question_data in questions:
@@ -322,8 +332,8 @@ class ImportExamView(APIView):
                     return Response({"message": "Exam not found", "status": "error"}, status=404)
             else:
                 exam_code = f"EXAM_{subject_name}_{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}"
-            exam = self.save_exam(subject, num_questions, exam_code)
-            print(exam_code)
+
+            exam = self.save_exam(subject, num_questions, exam_code, exam_id)
 
             table = document.tables[0]
             questions = self.process_questions_table(table,document)
